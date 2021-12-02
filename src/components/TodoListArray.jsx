@@ -1,12 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
-import {
-  BiListPlus,
-  BiTrash,
-  BiEdit,
-  BiListCheck,
-  BiCheckDouble,
-} from "react-icons/bi";
+import { BiListPlus, BiTrash, BiEdit, BiCheckDouble } from "react-icons/bi";
 
 import { fakeItems } from "../data";
 
@@ -23,7 +17,7 @@ const TodoListArray = () => {
   const inputRef = useRef();
   const updateRef = useRef();
 
-  const sizeIcon = "1.75em";
+  const sizeIcon = "24px";
 
   useEffect(() => {
     localStorage.setItem("items", JSON.stringify(items));
@@ -36,18 +30,21 @@ const TodoListArray = () => {
       setIsEditItem({});
       return;
     }
-    newItems[id] = isEditItem.text.trim();
+
+    newItems[id] = isEditItem?.text.trim();
     setItems(newItems);
     setIsEditItem({});
   };
 
   const editItem = (id) => {
     const newItems = [...items];
+
     const editedItem = {
       id,
       text: newItems[id],
       edit: true,
     };
+
     setIsEditItem(editedItem);
   };
 
@@ -99,7 +96,7 @@ const TodoListArray = () => {
       {items?.length <= 0 && (
         <p>
           <br />
-          🎈 no item here...
+          🎈 No item... 🎈
         </p>
       )}
 
@@ -109,10 +106,10 @@ const TodoListArray = () => {
           const isDisabled = isEditItem?.edit;
 
           return (
-            <div key={idx} style={{ background: isEditing && "cyan" }}>
+            <div key={idx} style={{ background: isEditing && "#fff" }}>
               {isEditing ? (
                 <input
-                  value={isEditItem.text}
+                  value={isEditItem?.text}
                   onChange={(e) =>
                     setIsEditItem({ id: idx, text: e.target.value, edit: true })
                   }
@@ -127,16 +124,12 @@ const TodoListArray = () => {
                   }}
                 />
               ) : (
-                <li>{`${item}`}</li>
+                <div style={{ overflowX: "auto" }}>
+                  <li style={{ pointerEvents: "none" }}>{`${item}`}</li>
+                </div>
               )}
 
               <div>
-                <button
-                  onClick={() => deleteItem(idx, item)}
-                  disabled={isDisabled}
-                  children={<BiTrash size={sizeIcon} />}
-                  title={"Delete Item"}
-                />
                 {isEditing ? (
                   <button
                     onClick={() => updateItem(idx)}
@@ -157,11 +150,12 @@ const TodoListArray = () => {
                     title={"Edit Item"}
                   />
                 )}
+
                 <button
-                  onClick={() => console.log("COMPLETE:", idx, item)}
+                  onClick={() => deleteItem(idx, item)}
                   disabled={isDisabled}
-                  children={<BiListCheck size={sizeIcon} />}
-                  title={"Complete Item"}
+                  children={<BiTrash size={sizeIcon} />}
+                  title={"Delete Item"}
                 />
               </div>
             </div>
@@ -174,27 +168,30 @@ const TodoListArray = () => {
 
 export default TodoListArray;
 
+const media = {
+  minTablet: "@media screen and (min-width: 768px)",
+};
+
 const Container = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  flex-direction: column;
   padding: 2rem 0;
-  /* background-color: #282c34; */
+  color: cyan;
   background-color: #282c34;
   background-image: url("https://www.transparenttextures.com/patterns/3px-tile.png");
   /* This is mostly intended for prototyping; please download the pattern and re-host for production environments. Thank you! */
-  color: cyan;
+  overflow: hidden;
 
   #form-item {
     width: 100%;
     display: flex;
     justify-content: space-between;
     padding: 0 1rem;
-    /* background: tomato; */
 
-    @media screen and (min-width: 768px) {
+    ${media.minTablet} {
       max-width: 600px;
     }
 
@@ -255,68 +252,71 @@ const Container = styled.div`
     width: 100%;
     margin-top: 2rem;
     overflow-y: auto;
-    /* background-color: tomato; */
 
-    @media screen and (min-width: 768px) {
+    ${media.minTablet} {
       max-width: 600px;
     }
   }
+
   ul > div {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* background: cyan; */
-    padding: 0.5rem 1rem;
+    padding: 12px 16px;
+    background-color: #fff1;
     transition: background-color 0.1s ease;
 
     &:nth-child(even) {
-      /* background: lightcyan; */
+      // odd(impar) / even(par)
+      background: #0001;
     }
-    &:hover {
+
+    /* &:hover {
       color: #282c34;
       background-color: cyan;
 
       button {
         color: #282c34;
-        /* border-color: #282c34;
-        background-color: #282c34; */
+        border-color: #282c34;
+        background-color: #282c34;
       }
-    }
+    } */
   }
-  ul > div + div {
-    border-top: 1px solid lightcyan;
-  }
+
+  /* ul > div + div {
+    border-top: 1px dashed cyan;
+  } */
 
   ul li {
     display: flex;
     list-style: none;
-    overflow-x: auto;
+    /* overflow-x: auto; */
   }
   ul div > div {
     display: flex;
-    flex-direction: column;
-    margin-left: 10px;
   }
   div > button {
     display: grid;
     place-items: center;
-    margin: 4px 0;
+    margin: 2px 0 0 8px;
     border: none;
     color: cyan;
     background: transparent;
-    cursor: pointer;
-    transition: all 0.1s ease;
-
-    &:hover {
-      transform: translateY(-2px);
-    }
+    transition: all 0.3s ease;
 
     &:disabled {
-      color: #1115 !important;
+      color: #9995 !important;
       cursor: not-allowed !important;
 
       &:hover {
         transform: translateY(0);
+      }
+    }
+
+    ${media.minTablet} {
+      cursor: pointer;
+      &:hover {
+        transform: translateY(-2px);
       }
     }
   }
